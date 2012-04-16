@@ -1,6 +1,6 @@
 # ssh-config
 
-Script for showing ssh_config for a given host.
+Script for showing [ssh_config(5)](http://linux.die.net/man/5/ssh_config) for a given host.
 
 ## Usage
 
@@ -10,4 +10,4 @@ Script for showing ssh_config for a given host.
 - use as `ssh-config hostname`
 
 ## Stollen from 
-Parsing logic stollen from `net-ssh` gem [Net::SSH::Config](https://github.com/net-ssh/net-ssh/blob/master/lib/net/ssh/config.rb) class.
+Parsing logic stollen from `net-ssh` gem, [Net::SSH::Config](https://github.com/net-ssh/net-ssh/blob/master/lib/net/ssh/config.rb) class.
