@@ -1,11 +1,13 @@
+# ssh-config
+
 Script for showing ssh_config for a given host.
 
-Usage:
+## Usage
 
 - symlink or copy the script somewhere in the $PATH
-- add bash completion for ssh-config "complete -F _ssh ssh-config"
+- add bash completion for ssh-config `complete -F _ssh ssh-config`
 - reload shell
-- use as ssh-config hostname
+- use as `ssh-config hostname`
 
-Parsing logic stollen from net-ssh gem. Net::SSH::Config
-https://github.com/net-ssh/net-ssh/blob/master/lib/net/ssh/config.rb
+## Stollen from 
+Parsing logic stollen from `net-ssh` gem [Net::SSH::Config](https://github.com/net-ssh/net-ssh/blob/master/lib/net/ssh/config.rb) class.
