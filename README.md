@@ -2,7 +2,6 @@ Script for showing ssh_config for a given host.
 
 Usage:
 
-- add executable bit for the script
 - symlink or copy the script somewhere in the $PATH
 - add bash completion for ssh-config "complete -F _ssh ssh-config"
 - reload shell
