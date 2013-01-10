@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
+require 'pathname'
 
-require './ssh_config'
+require File.join(File.dirname(Pathname.new($0).realpath),'ssh_config')
 sshconf = SshConfig.new(ARGV[0])
 
 puts sshconf.pretty_print
