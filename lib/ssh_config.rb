@@ -14,7 +14,7 @@ module Ssh
     end
 
     def output
-      method = "print"
+      method = "text"
 
       if @options[:format] == :json
         method = "json"
@@ -27,7 +27,7 @@ module Ssh
       send(method)
     end
 
-    def print
+    def text
       results.each do |host, config|
         puts "Host\t#{host}"
 
@@ -37,7 +37,7 @@ module Ssh
       end
     end
 
-    def pretty_print
+    def pretty_text
       longest = results.values
         .map(&:values).flatten.map { |l| l.length }.max
 

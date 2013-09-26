@@ -1,7 +1,36 @@
 #!/usr/bin/env ruby
 
 require 'ssh-config'
+require 'optparse'
 
-sshconf = Ssh::Config.new(ARGV)
+options = {}
+
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: ssh-config [options]"
+
+  opts.on("-p", "--pretty", "Pretty output") do |v|
+    options[:pretty] = true
+  end
+
+  opts.on("-f", "--format format", [:text, :json], "Output format (text, json)") do |f|
+    options[:format] = f
+  end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument, OptionParser::InvalidArgument
+  puts $!.to_s
+  puts optparse
+  exit
+end
+
+
+sshconf = Ssh::Config.new(ARGV, options)
 
 sshconf.output
