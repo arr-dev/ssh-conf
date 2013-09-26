@@ -4,4 +4,4 @@ require 'ssh-config'
 
 sshconf = Ssh::Config.new(ARGV)
 
-sshconf.pretty_print
+sshconf.output
