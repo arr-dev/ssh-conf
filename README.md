@@ -1,13 +1,30 @@
 # ssh-config
 
-Script for showing [ssh_config(5)](http://linux.die.net/man/5/ssh_config) for a given host.
+
+Gem which prints [ssh_config(5)](http://linux.die.net/man/5/ssh_config) for given hosts.
+
+It uses `net-ssh` gem to parse config files.
+
+## Installation
+
+    $ gem install ssh-config
 
 ## Usage
 
-- symlink or copy the script somewhere in the $PATH
-- add bash completion for ssh-config `complete -F _ssh ssh-config`
-- reload shell
-- use as `ssh-config hostname`
+    Usage: ssh-config [options]
+        -a, --all                        Search all default SSH config files on system
+            --files FILES                Comma separated list of files to process
+        -p, --pretty                     Pretty output
+        -f, --format format              Output format (text, json)
+        -h, --help                       Show this message
 
-## Stollen from 
-Parsing logic stollen from `net-ssh` gem, [Net::SSH::Config](https://github.com/net-ssh/net-ssh/blob/master/lib/net/ssh/config.rb) class.
+By defaults it outputs config in plain text, tab separated format.
+
+It can be changed to ouput to JSON, pretty JSON or pretty-ish text.
+
+Only `~/.ssh/config` files is parsed by default.
+
+## Thanks
+
+Thanks to the creators of [net-ssh](https://github.com/net-ssh/net-ssh) gem for parsing logic.
+
