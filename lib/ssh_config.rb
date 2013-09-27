@@ -1,6 +1,3 @@
-# TODO load ~/.ssh/config only by default, switch for all
-# TODO pass custom config file
-
 require 'json'
 require 'net/ssh/config'
 require 'net/ssh/proxy/command'
@@ -61,7 +58,7 @@ module Ssh
     def results
       if @results.empty?
         @hosts.each do |host|
-          config = Net::SSH::Config.for(host)
+          config = Net::SSH::Config.for(host, files)
           config.each do |key, value|
             case value
             when Net::SSH::Proxy::Command
@@ -79,6 +76,16 @@ module Ssh
       end
 
       @results
+    end
+
+    def files
+      if @options[:files]
+        @options[:files].split(',')
+      elsif @options[:all]
+        Net::SSH::Config.default_files
+      else
+        %w( ~/.ssh/config )
+      end
     end
 
     private

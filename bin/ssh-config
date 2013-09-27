@@ -8,6 +8,14 @@ options = {}
 optparse = OptionParser.new do |opts|
   opts.banner = "Usage: ssh-config [options]"
 
+  opts.on("-a", "--all", "Search all default SSH config files on system") do |v|
+    options[:all] = true
+  end
+
+  opts.on("-f", "--files FILES", "Comma separated list of files to process") do |f|
+    options[:files] = f
+  end
+
   opts.on("-p", "--pretty", "Pretty output") do |v|
     options[:pretty] = true
   end
