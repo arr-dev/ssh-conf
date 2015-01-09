@@ -41,4 +41,4 @@ end
 
 sshconf = Ssh::Config.new(ARGV, options)
 
-sshconf.output
+puts sshconf.output

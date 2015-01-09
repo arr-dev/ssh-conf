@@ -1,6 +1,4 @@
 require 'json'
-require 'net/ssh/config'
-require 'net/ssh/proxy/command'
 
 module Ssh
   class Config
@@ -21,48 +19,55 @@ module Ssh
         method = "pretty_#{method}"
       end
 
-      send(method)
+      send("as_#{method}")
     end
 
-    def text
-      results.each do |host, config|
-        puts "Host\t#{host}"
-
-        config.each do |key, value|
-          puts "#{camelize(key)}\t#{value}"
-        end
-      end
-    end
-
-    def pretty_text
-      longest = results.values
-        .map(&:values).flatten.map { |l| l.length }.max
+    def as_text
+      out = ''
 
       results.each do |host, config|
-        puts sprintf("%-#{longest}s %s", 'Host', host)
+        out << "Host\t#{host}\n"
 
         config.each do |key, value|
-          puts sprintf("%-#{longest}s %s", camelize(key), value)
+          out << "#{key}\t#{value}\n"
         end
       end
+
+      out
     end
 
-    def json
-      puts JSON.dump(results)
+    def as_pretty_text
+      longest = results.values.map(&:flatten).flatten
+        .max { |a, b| a.length <=> b.length }.length + 2
+
+      out = ''
+      results.each do |host, config|
+         out << sprintf("%-#{longest}s %s\n", 'Host', host)
+
+        config.each do |key, value|
+          out << sprintf("%-#{longest}s %s\n", key, value)
+        end
+
+        out << "\n"
+      end
+
+      out
     end
 
-    def pretty_json
-      puts JSON.pretty_generate(results)
+    def as_json
+      JSON.dump(results)
+    end
+
+    def as_pretty_json
+      JSON.pretty_generate(results)
     end
 
     def results
       if @results.empty?
         @hosts.each do |host|
-          config = Net::SSH::Config.for(host, files)
+          config = self.for(host)
           config.each do |key, value|
             case value
-            when Net::SSH::Proxy::Command
-              config[key] = value.command_line_template
             when Array
               config[key] = value.join(',')
             when String
@@ -78,11 +83,82 @@ module Ssh
       @results
     end
 
+    def for(host)
+      files.inject({}) { |settings, file|
+        load(file, host, settings)
+      }
+    end
+
+    def load(path, host, settings={})
+      file = File.expand_path(path)
+      return settings unless File.readable?(file)
+
+      globals = {}
+      matched_host = nil
+      seen_host = false
+      IO.foreach(file) do |line|
+        next if line =~ /^\s*(?:#.*)?$/
+
+        if line =~ /^\s*(\S+)\s*=(.*)$/
+          key, value = $1, $2
+        else
+          key, value = line.strip.split(/\s+/, 2)
+        end
+
+        # silently ignore malformed entries
+        next if value.nil?
+
+        value = $1 if value =~ /^"(.*)"$/
+
+        value = case value.strip
+          when /^\d+$/ then value.to_i
+          when /^no$/i then false
+          when /^yes$/i then true
+          else value
+          end
+
+        if key == 'Host'
+          # Support "Host host1 host2 hostN".
+          # See http://github.com/net-ssh/net-ssh/issues#issue/6
+          negative_hosts, positive_hosts = value.to_s.split(/\s+/).partition { |h| h.start_with?('!') }
+
+          # Check for negative patterns first. If the host matches, that overrules any other positive match.
+          # The host substring code is used to strip out the starting "!" so the regexp will be correct.
+          negative_match = negative_hosts.select { |h| host =~ pattern2regex(h[1..-1]) }.first
+
+          if negative_match
+            matched_host = nil
+          else
+            matched_host = positive_hosts.select { |h| host =~ pattern2regex(h) }.first
+          end
+
+          seen_host = true
+          settings.delete(key)
+        elsif !seen_host
+          if key == 'IdentityFile'
+            (globals[key] ||= []) << value
+          else
+            globals[key] = value unless settings.key?(key)
+          end
+        elsif !matched_host.nil?
+          if key == 'IdentityFile'
+            (settings[key] ||= []) << value
+          else
+            settings[key] = value unless settings.key?(key)
+          end
+        end
+      end
+
+      settings = globals.merge(settings) if globals
+
+      return settings
+    end
+
     def files
       if @options[:files]
         @options[:files].split(',')
       elsif @options[:all]
-        Net::SSH::Config.default_files
+        %w(~/.ssh/config /etc/ssh_config /etc/ssh/ssh_config)
       else
         %w( ~/.ssh/config )
       end
@@ -90,9 +166,16 @@ module Ssh
 
     private
 
-    def camelize(str)
-      str.to_s.split('_').map(&:capitalize).join
+    # Converts an ssh_config pattern into a regex for matching against
+    # host names.
+    def pattern2regex(pattern)
+      pattern = "^" + pattern.to_s.gsub(/\./, "\\.").
+        gsub(/\?/, '.').
+        gsub(/([+\/])/, '\\\\\\0').
+        gsub(/\*/, '.*') + "$"
+      Regexp.new(pattern, true)
     end
+
   end
 end
 

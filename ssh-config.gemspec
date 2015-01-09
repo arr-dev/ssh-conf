@@ -6,7 +6,7 @@ require 'ssh-config/version'
 Gem::Specification.new do |gem|
   gem.name          = "ssh-config"
   gem.version       = Ssh::Config::VERSION
-  gem.authors       = ["Soul Rebel"]
+  gem.authors       = ["Nenad Petronijevic"]
   gem.email         = ["set.krag@gmail.com"]
   gem.description   = %q{TODO: Write a gem description}
   gem.summary       = %q{TODO: Write a gem summary}
@@ -16,6 +16,5 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
-  gem.add_dependency "net-ssh"
   gem.add_development_dependency "pry"
 end
