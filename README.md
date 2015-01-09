@@ -3,8 +3,6 @@
 
 Gem which prints [ssh_config(5)](http://linux.die.net/man/5/ssh_config) for given hosts.
 
-It uses `net-ssh` gem to parse config files.
-
 ## Installation
 
     $ gem install ssh-config
