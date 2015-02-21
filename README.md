@@ -1,15 +1,15 @@
-# ssh-config
+# ssh-conf
 
 
 Gem which prints [ssh_config(5)](http://linux.die.net/man/5/ssh_config) for given hosts.
 
 ## Installation
 
-    $ gem install ssh-config
+    $ gem install ssh-conf
 
 ## Usage
 
-    Usage: ssh-config [options]
+    Usage: ssh-conf [options]
         -a, --all                        Search all default SSH config files on system
             --files FILES                Comma separated list of files to process
         -p, --pretty                     Pretty output

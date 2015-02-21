@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 
-require 'ssh-config'
+require 'ssh-conf'
 require 'optparse'
 
 options = {}
 
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: ssh-config [options]"
+  opts.banner = "Usage: ssh-conf [options]"
 
-  opts.on("-a", "--all", "Search all default SSH config files on system") do |v|
+  opts.on("-a", "--all", "Search all default SSH conf files on system") do |v|
     options[:all] = true
   end
 
@@ -22,6 +22,11 @@ optparse = OptionParser.new do |opts|
 
   opts.on("-f", "--format format", [:text, :json], "Output format (text, json)") do |f|
     options[:format] = f
+  end
+
+  opts.on("-v", "--version", "Gem version") do |f|
+    puts "ssh-conf: #{Ssh::Config::VERSION}"
+    exit
   end
 
   opts.on_tail("-h", "--help", "Show this message") do

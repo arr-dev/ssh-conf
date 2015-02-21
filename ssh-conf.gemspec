@@ -1,20 +1,21 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'ssh-config/version'
+require 'ssh-conf/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "ssh-config"
+  gem.name          = "ssh-conf"
   gem.version       = Ssh::Config::VERSION
   gem.authors       = ["Nenad Petronijevic"]
   gem.email         = ["set.krag@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Displays ssh config for given hosts}
+  gem.summary       = %q{Displays ssh config for given hosts, with different output options}
+  gem.homepage      = "https://github.com/arr-dev/ssh-conf"
 
-  gem.files         = `git ls-files`.split($/)
+  gem.license       = 'MIT'
+  gem.files         = Dir['{bin/*,lib/**/*,spec/**/*}']
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
-  gem.add_development_dependency "pry"
+  gem.add_development_dependency "pry", '~> 0'
 end
